@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+        <record id="view_sale_rental_inv" model="ir.ui.view">
+            <field name="name">Invoice Orders</field>
+            <field name="model">sale.rental.inv</field>
+            <field name="arch" type="xml">
+                <form string="Invoice Sales Order">
+                    <p class="oe_grey">
+                        Invoices will be created in draft so that you can review
+                        them before validation.
+                    </p>
+                    <group>
+                         <field name="invoice_date" required="1"/>                     
+                    </group>
+                    <footer>
+                        <button name="create_invoices" id="create_invoice_open" string="Create and View Invoice Line" type="object"
+                            context="{'open_invoices': True}" class="btn-primary"/>
+                        <!-- <button name="create_invoices" id="create_invoice" string="Create Invoice" type="object"/> -->
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_view_sale_rental_inv" model="ir.actions.act_window">
+            <field name="name">Create Rental invoices</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sale.rental.inv</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <!-- TODO: check if we need this -->
+            <field name="binding_model_id" ref="sale.model_sale_order" />
+            <field name="binding_view_types">list</field>
+        </record>
+
+</odoo>

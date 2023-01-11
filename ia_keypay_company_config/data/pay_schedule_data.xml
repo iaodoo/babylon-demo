@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <record id="pay_schedule_fortnightly" model="ia.employee.pay.schedule">
+            <field name="name">Fortnightly</field>
+            <field name="synch">True</field>
+        </record>
+        <record id="pay_schedule_monthly" model="ia.employee.pay.schedule">
+            <field name="name">Monthly</field>
+            <field name="synch">True</field>
+        </record>
+        <record id="pay_schedule_weekly" model="ia.employee.pay.schedule">
+            <field name="name">Weekly</field>
+            <field name="synch">True</field>
+        </record>
+        <record id="pay_schedule_full" model="employment.type">
+            <field name="name">Full Time</field>
+            <field name="synch">True</field>
+        </record>
+        <record id="pay_schedule_part" model="employment.type">
+            <field name="name">Part Time</field>
+            <field name="synch">True</field>
+        </record>
+        <record id="pay_schedule_labour" model="employment.type">
+            <field name="name">Labour Hire</field>
+            <field name="synch">True</field>
+        </record>
+        <record id="pay_schedule_income" model="employment.type">
+            <field name="name">Superannuation Income Stream</field>
+            <field name="synch">True</field>
+        </record>
+        <record id="pay_schedule_casual" model="employment.type">
+            <field name="name">Casual</field>
+            <field name="synch">True</field>
+        </record>
+    </data>
+</odoo>

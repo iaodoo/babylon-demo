@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+  <!-- Button in SO -->
+  <record id="ia_sale_order_inoutsheet" model="ir.ui.view">
+    <field name="name">ia_sale_order_inoutsheet</field>
+    <field name="model">sale.order</field>
+    <field name="inherit_id" ref="sale.view_order_form"/>
+    <field name="arch" type="xml">
+
+      <xpath expr="//button[@name='preview_sale_order']" position="after">
+        <field name='is_rental_order' invisible="1"/>
+        <button class="oe_stat_button" type="object" name="action_view_in_out_sheet" icon="fa-list" string="In Out Sheet" attrs="{'invisible': [('is_rental_order', '!=', True)]}"/>
+      </xpath>
+    
+    </field>
+  </record>
+  
+  <!-- In Out Sheet Form -->
+  <record id="ia_inout_sheet_form" model="ir.ui.view">
+    <field name="name">ia_inout_sheet_form</field>
+    <field name="model">ia.inout.sheet</field>
+    <field name="arch" type="xml">
+
+      <form>
+          <header>    
+              <button name="out_sheet" type="object" string="Hire Agreement Completed" class="oe_highlight" states="draft"/>
+              <button name="out_sheetdone" type="object" string="Out Sheet Completed" class="oe_highlight" states="out"/>
+              <button name="in_sheet" type="object" string="In Sheet Completed" class="oe_highlight" states="onhire"/>              
+              <button name="pickup" type="object" string="Pickup" class="btn-primary" states="outdone"/>
+              <button name="onhire" type="object" string="In Sheet" class="oe_highlight" states="outdone"/>
+              <button name="open_return" type="object" string="Return" class="button-primary" states="in"/>
+              <field name="state" widget="statusbar"/>
+          </header>
+
+          <sheet>
+
+              <group>
+                  <group>
+                      <field name="partner_id" readonly="1"/>
+                      <field name="emp_name" attrs="{'readonly': [('state', 'not in', ('draft','out'))]}"/>
+                      <field name="position" attrs="{'readonly': [('state', 'not in', ('draft','out'))]}"/>
+                  </group>
+                  <group>
+                      <field name="site" attrs="{'readonly': [('state', 'not in', ('draft','out'))]}"/>
+                      <field name="sale_order_id" readonly="1"/>
+                      <field name="ia_reserved_lot_ids" invisible="1"/>
+                      
+                      <field name="department" attrs="{'readonly': [('state', 'not in', ('draft','out'))]}"/>
+                  </group>
+              </group>
+
+              <notebook>
+
+                <page string="OUT Sheet" name="out_lines">
+                 <group>
+                    <field name="ia_picked_lot_ids" widget="many2many_tags" attrs="{'readonly': [('state', 'in', ('outdone','onhire','in', 'hiredone'))]}"/>
+                   </group>
+                    <separator string="Safety Features"/>
+                    <field name="out_safety_line" attrs="{'readonly': [('state', 'not in', ('draft','out'))]}">
+                        <tree string="Safety Features" editable="top" create="false" delete="false">
+                            <field name="feature_id"/>
+                            <field name="explained_na" string="Explained" readonly="1"/>
+                            <field name="comments"/>
+                            <button string="Explained" type="object" name="button_explained" class="oe_link pt-0 oe_inline"/>
+                            <button string="N/A" type="object" name="button_na" class="oe_link pt-0 oe_inline"/>
+                        </tree>
+                    </field>
+                    
+                    <separator string="Operating Functions"/>
+                    <field name="out_operating_line" attrs="{'readonly': [('state', 'not in', ('draft','out'))]}">
+                        <tree string="Operating Functions" editable="top" create="false" delete="false">
+                            <field name="feature_id"/>
+                            <field name="explained_na" string="Explained" readonly="1"/>
+                            <field name="comments"/>
+                            <button string="Explained" type="object" name="button_explained" class="oe_link pt-0 oe_inline"/>
+                            <button string="N/A" type="object" name="button_na" class="oe_link pt-0 oe_inline"/>
+                        </tree>
+                    </field>
+
+                    <separator string="Extra Functions"/>
+                    <field name="out_extra_line" attrs="{'readonly': [('state', 'not in', ('draft','out'))]}">
+                        <tree string="Extra Functions" editable="top" create="false" delete="false">
+                            <field name="feature_id"/>
+                            <field name="explained_na" string="Explained" readonly="1"/>
+                            <field name="comments"/>
+                            <button string="Explained" type="object" name="button_explained" class="oe_link pt-0 oe_inline"/>
+                            <button string="N/A" type="object" name="button_na" class="oe_link pt-0 oe_inline"/>
+                        </tree>
+                    </field>
+
+                    <group>
+                        <field name="wta_signature" widget="signature" attrs="{'readonly': [('state', 'not in', ('draft','out'))]}"/>
+                        <field name="customer_signature" widget="signature" attrs="{'readonly': [('state', 'not in', ('draft','out'))]}"/>
+                    </group>
+                </page>
+
+                <page string="IN Sheet" name="in_lines">
+                    <group>
+                        <!--<field name="off_hire_clean" attrs="{'required': [('state', 'in', ('onhire'))],'readonly': [('state', 'not in', ('onhire'))]}"/>
+                        <field name="off_hire_clean_charge" attrs="{'readonly': [('state', 'not in', ('onhire'))], 'invisible': [('off_hire_clean', '!=', 'Yes')]}"/>-->
+                        <field name="in_comments" string="Comments" attrs="{'readonly': [('state', 'not in', ('onhire'))]}"/>
+                        <field name="ia_returned_lot_ids" widget="many2many_tags" attrs="{'readonly': [('state', 'in', ('hiredone'))]}"/>
+
+
+                    </group>
+
+                    <separator string="Trailer service Checklist"/>
+                    <field name="in_trail_service_line_ids" attrs="{'readonly': [('state', 'not in', ('onhire'))]}">
+                        <tree string="Trailer service" editable="top" create="false" delete="false">
+                            <field name="feature_id"/>
+                            <field name="explained_na" readonly="1"/>
+                            <field name="comments"/>
+                            <button string="Functioning" type="object" name="button_explained"
+                                    class="oe_link pt-0 oe_inline"/>
+                            <button string="Repairs Required" type="object" name="button_na" class="oe_link pt-0 oe_inline"/>
+                        </tree>
+                    </field>
+
+                    <separator string="Tank Service Checklist"/>
+                    <field name="in_tank_service_line_ids" attrs="{'readonly': [('state', 'not in', ('onhire'))]}">
+                        <tree string="Tank Service" editable="top" create="false" delete="false">
+                            <field name="feature_id"/>
+                            <field name="explained_na" readonly="1"/>
+                            <field name="comments"/>
+                            <button string="Functioning" type="object" name="button_explained"
+                                    class="oe_link pt-0 oe_inline"/>
+                            <button string="Repairs Required" type="object" name="button_na" class="oe_link pt-0 oe_inline"/>
+                        </tree>
+                    </field>
+                </page>
+
+              </notebook>
+
+          </sheet>
+
+          <div class="oe_chatter">
+              <field name="message_follower_ids"/>
+              <field name="activity_ids"/>
+              <field name="message_ids" options="{'post_refresh': 'recipients'}"/>
+          </div>
+
+      </form>
+
+    </field>
+  </record>
+
+  <!-- In Out Sheet Tree -->
+  <record id="ia_inout_sheet_tree" model="ir.ui.view">
+    <field name="name">ia_inout_sheet_tree</field>
+    <field name="model">ia.inout.sheet</field>
+    <field name="arch" type="xml">
+
+      <tree>
+        <field name="partner_id"/>
+        <field name="ia_picked_lot_ids" widget="many2many_tags"/>
+        <field name="ia_returned_lot_ids" widget="many2many_tags"/>        
+        <field name="state"/>
+      </tree>
+
+    </field>
+  </record>
+
+  <!-- In Out Sheet Action -->
+  <record id="ia_inout_sheet_action" model="ir.actions.act_window">
+      <field name="name">In/Out Sheet</field>
+      <field name="res_model">ia.inout.sheet</field>
+      <field name="view_mode">tree,form</field>
+  </record>
+  <menuitem id="board_out_sheet_master" parent="sale_renting.rental_order_menu"   action="ia_inout_sheet_action" sequence="10"/>
+
+<!--<menuitem id="dashboard_in_out_sheet_master"   name="In/Out Sheet"  parent="sale_renting.rental_order_menu"    action = "menu_out_sheet_master"  sequence="10"/> -->
+ 
+  <!-- Master Menu -->
+  <menuitem id="menu_out_sheet_master"  name="Out Sheet"  parent="sale_renting.menu_rental_config"  sequence="100"/>
+  <menuitem id="menu_in_sheet_master"  name="In Sheet"  parent="sale_renting.menu_rental_config"  sequence="110"/>
+
+  <!-- Safety Features -->
+  <record id="out_safety_master_tree" model="ir.ui.view">
+    <field name="name">out_safety_master_tree</field>
+    <field name="model">out.safety.master</field>
+    <field name="arch" type="xml">
+      <tree editable="bottom">
+        <field name="name"/>
+      </tree>
+    </field>
+  </record>
+
+  <record id="out_safety_master_action" model="ir.actions.act_window">
+      <field name="name">Safety Features</field>
+      <field name="res_model">out.safety.master</field>
+      <field name="view_mode">tree</field>
+  </record>
+
+  <menuitem id="menu_out_safety_master"
+            name="Safety Features"
+            parent="menu_out_sheet_master"
+            action="out_safety_master_action"
+            sequence="100"/>
+
+  <!-- Operating Functions -->
+  <record id="out_operating_master_tree" model="ir.ui.view">
+    <field name="name">out_operating_master_tree</field>
+    <field name="model">out.operating.master</field>
+    <field name="arch" type="xml">
+      <tree editable="bottom">
+        <field name="name"/>
+      </tree>
+    </field>
+  </record>
+
+  <record id="out_operating_master_action" model="ir.actions.act_window">
+      <field name="name">Operating Functions</field>
+      <field name="res_model">out.operating.master</field>
+      <field name="view_mode">tree</field>
+  </record>
+
+  <menuitem id="menu_out_operating_master"
+            name="Operating Functions"
+            parent="menu_out_sheet_master"
+            action="out_operating_master_action"
+            sequence="101"/>
+
+  <!-- Extra Functions -->
+  <record id="out_extra_master_tree" model="ir.ui.view">
+    <field name="name">out_extra_master_tree</field>
+    <field name="model">out.extra.master</field>
+    <field name="arch" type="xml">
+      <tree editable="bottom">
+        <field name="name"/>
+      </tree>
+    </field>
+  </record>
+
+  <record id="out_extra_master_action" model="ir.actions.act_window">
+      <field name="name">Extra Functions</field>
+      <field name="res_model">out.extra.master</field>
+      <field name="view_mode">tree</field>
+  </record>
+
+  <menuitem id="menu_out_extra_master"
+            name="Extra Functions"
+            parent="menu_out_sheet_master"
+            action="out_extra_master_action"
+            sequence="102"/>
+
+    <!-- Trailer service -->
+    <record id="in_trail_service_master_tree" model="ir.ui.view">
+        <field name="name">in.trail.service.master.tree.view</field>
+        <field name="model">in.trail.service.master</field>
+        <field name="arch" type="xml">
+            <tree editable="bottom">
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="in_trail_service_master_action" model="ir.actions.act_window">
+        <field name="name">Trailer service Checklist</field>
+        <field name="res_model">in.trail.service.master</field>
+        <field name="view_mode">tree</field>
+    </record>
+
+    <menuitem id="menu_in_trail_service_master"
+              name="Trailer service Checklist"
+              parent="menu_in_sheet_master"
+              action="in_trail_service_master_action"
+              sequence="111"/>
+
+    <!-- Tank Service -->
+    <record id="in_tank_service_master_tree" model="ir.ui.view">
+        <field name="name">in.tank.service.master.tree.view</field>
+        <field name="model">in.tank.service.master</field>
+        <field name="arch" type="xml">
+            <tree editable="bottom">
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="in_tank_service_master_action" model="ir.actions.act_window">
+        <field name="name">Tank Service Checklist</field>
+        <field name="res_model">in.tank.service.master</field>
+        <field name="view_mode">tree</field>
+    </record>
+
+    <menuitem id="menu_in_tank_service_master"
+              name="Tank Service Checklist"
+              parent="menu_in_sheet_master"
+              action="in_tank_service_master_action"
+              sequence="11"/>
+  
+
+   <record id="message_wizard_form" model="ir.ui.view">
+        <field name="name">message.wizard.form</field>
+        <field name="model">message.wizard</field>
+        <field name="arch" type="xml">
+            <form >
+                <p class="text-center">
+                    <field name="message"/>
+                </p>
+            <footer>
+                <button name="action_ok" string="Ok" type="object" default_focus="1" class="oe_highlight"/> 
+            </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

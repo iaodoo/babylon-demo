@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_employment_type_employee,rate.option.employee,model_employment_type,base.group_user,1,0,0,0
+access_employment_type_hr_manager,rate.option.hr.manager,model_employment_type,hr.group_hr_manager,1,1,1,1
+access_employee_pay_schedule_employee,ia.employee.pay.schedule'.employee,model_ia_employee_pay_schedule,base.group_user,1,0,0,0
+access_employee_pay_schedule_hr_manager,ia.employee.pay.schedule'.hr.manager,model_ia_employee_pay_schedule,hr.group_hr_manager,1,1,1,1
+

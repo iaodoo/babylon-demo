@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data noupdate="1">
+        <record id="key_pay_analytic_account_cron" model="ir.cron">
+            <field name="name">Auto Create Key Pay Worktype</field>
+            <field name="model_id" ref="analytic.model_account_analytic_account"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_auto_create_keypay_worktype()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="active" eval="True"/>
+            <field name="doall" eval="False"/>
+        </record>
+    </data>
+
+</odoo>

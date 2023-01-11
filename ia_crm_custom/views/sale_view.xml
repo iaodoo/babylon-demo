@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+  <!-- Sales Order Form -->
+  <record id="ia_sale_order_inherit" model="ir.ui.view">
+    <field name="name">ia_sale_order_inherit</field>
+    <field name="model">sale.order</field>
+    <field name="inherit_id" ref="sale.view_order_form"/>
+    <field name="priority">100</field>
+    <field name="arch" type="xml">
+       <xpath expr="//form/sheet/div[2]" position="replace">
+       <div class="badge-pill badge-info float-right"
+            attrs="{'invisible': [
+              '|', ('state', 'not in', ['sale', 'done']),
+              '|', ('rental_status', '!=', 'pickup'), ('has_late_lines', '=', True)]}"> Waiting Hire Agreement</div>
+
+       </xpath>
+        <xpath expr="//div[@name='button_box']" position="after">
+                <field name="wait_hire_agreement" invisible="1"/>                   
+
+        
+          <div class="badge-pill badge-info float-right"
+            attrs="{'invisible': [            
+              '|',('rental_status', '!=', 'wha'), ('wait_hire_agreement', '=', True)]}">OUT Sheet</div>
+           <div class="badge-pill badge-info float-right"
+            attrs="{'invisible': [           
+            ('rental_status', '!=', 'wpu'),('wait_hire_agreement', '=', False)]}">Waiting Pick Up</div>
+        </xpath> 
+      <xpath expr="//field[@name='date_order']" position="after">
+        <field name="quote_type" attrs="{'invisible': [('is_rental_order', '=', True)],  'required': [('is_rental_order', '=', False)],}"/>                   
+      </xpath>
+        <xpath expr="//form[1]/sheet[1]/notebook[1]" position="inside">
+                     <page string="Map Route" name="studio_page"> <!--attrs="{'invisible': [('is_rental_order', '=', True)]}"-->
+                        <field name="order_maps" string="Maps"/>
+                    </page>
+                </xpath>
+        <xpath expr="//field[@name='partner_id']" position="attributes">
+            <attribute name="options">{'no_create': True, 'no_create_edit': True}</attribute>
+        </xpath>
+    </field>
+  </record>
+
+</odoo>

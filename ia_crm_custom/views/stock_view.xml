@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+  <!-- Serial Number Form -->
+  <record id="ia_stock_production_lot_inherit" model="ir.ui.view">
+    <field name="name">ia_stock_production_lot_inherit</field>
+    <field name="model">stock.production.lot</field>
+    <field name="inherit_id" ref="stock.view_production_lot_form"/>
+    <field name="arch" type="xml">
+        <xpath expr="//div[hasclass('oe_button_box')]/button" position="before">
+            <button class="oe_stat_button" name="action_view_analytic_account"
+                    type="object" icon="fa-arrows-v" string="Analytic Accounts"
+                    attrs="{'invisible': [('analytic_account_id', '=', False)]}"/>
+        </xpath>
+      <xpath expr="//field[@name='ref']" position="after">
+        <field name="home_depot_id" domain="[('usage','=','internal')]"/>
+        <field name="rental_status"/>
+        <field name="analytic_account_id" invisible="0"/>
+      </xpath>
+    
+    </field>
+  </record>
+
+  <!-- Serial Number Tree -->
+  <record id="ia_stock_production_lot_tree_inherit" model="ir.ui.view">
+    <field name="name">ia_stock_production_lot_tree_inherit</field>
+    <field name="model">stock.production.lot</field>
+    <field name="inherit_id" ref="stock.view_production_lot_tree"/>
+    <field name="arch" type="xml">
+
+      <xpath expr="//field[@name='create_date']" position="after">
+        <field name="current_location_id"/>
+        <field name="home_depot_id"/>
+        <field name="return_date"/>
+        <field name="rental_status"/>
+      </xpath>
+    
+    </field>
+  </record>
+
+</odoo>

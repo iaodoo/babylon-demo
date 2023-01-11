@@ -1,0 +1,465 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo> 
+  <record id="ia_rental_order_wizard_view_form" model="ir.ui.view">
+    <field name="name">ia.rental.order.wizard.form</field>
+    <field name="model">rental.order.wizard</field>
+     <field name="inherit_id" ref="sale_renting.rental_order_wizard_view_form"/>
+    <field name="arch" type="xml"> 
+        <xpath expr="//tree/field[@name='qty_returned']" position="after">
+          <field name="actual_return_date" required="0" attrs="{'column_invisible':[('parent.status', '=', 'pickup')]}"/>  
+          <field name="actual_pickup_date" required="0" attrs="{'column_invisible':[('parent.status', '=', 'return')]}"/>
+        </xpath>
+        <xpath expr="//tree/field[@name='pickedup_lot_ids']" position="attributes">
+            <attribute name="invisible">1</attribute>
+         </xpath>         
+        <xpath expr="//tree/field[@name='pickedup_lot_ids']" position="before">
+          <field name="rental_lot_id"  attrs="{
+          'column_invisible': ['|', ('parent.status', '=', 'return'), ('parent.has_tracked_lines', '=', False)],
+          'invisible':[('tracking', '!=', 'serial')],
+          }" options="{'no_create':1, 'no_edit':1}"/> 
+        </xpath>
+         <xpath expr="//tree/field[@name='returned_lot_ids']" position="attributes">
+            <attribute name="invisible">1</attribute>
+         </xpath>
+
+        <xpath expr="//tree/field[@name='returned_lot_ids']" position="before">
+          <field name="rental_returned_lot_id" attrs="{
+          'column_invisible':['|', ('parent.status', '=', 'pickup'), ('parent.has_tracked_lines', '=', False)],
+          'invisible':[('tracking', '!=', 'serial')],
+          }"  options="{'no_create':1, 'no_edit':1}"/> 
+        </xpath>     
+        
+    </field>
+</record>       
+<record id="ia_rental_order_view_tree" model="ir.ui.view">
+    <field name="name">ia.sale_renting.rental_order_view_tree</field>
+    <field name="model">sale.order</field>
+     <field name="inherit_id" ref="sale_renting.rental_order_view_tree"/>
+    <field name="arch" type="xml"> 
+         <xpath expr="//tree/field[@name='rental_status']" position="before">
+          <!-- <field name="pickup_date"/> 
+           <field name="return_date"/> -->
+           <field name="reserved_lot_ids" widget="many2many_tags" groups="stock.group_production_lot"/>         
+          <field name="last_invoice_date"/>
+          </xpath>
+        <xpath expr="//tree/field[@name='next_action_date']" position="replace"/>
+
+    </field>
+</record>       
+
+<record id="ia_product_template_view_form" model="ir.ui.view">
+    <field name="name">ia_product_template_view_form_view_tree</field>
+    <field name="model">product.template</field>
+     <field name="inherit_id" ref="product.product_template_only_form_view"/>
+     <field name="priority">100</field>
+    <field name="arch" type="xml"> 
+         <xpath expr="//field[@name='barcode']" position="after">
+          <field name="invoice_monthly"/>    
+           <field name="hide_days"/>         
+          </xpath>
+    </field>
+</record>       
+
+<record id="ia_product_variant_easy_edit_view" model="ir.ui.view">
+    <field name="name">ia_product.product_variant_easy_edit_view</field>
+    <field name="model">product.product</field>
+     <field name="inherit_id" ref="product.product_normal_form_view"/>
+     <field name="priority">100</field>
+    <field name="arch" type="xml"> 
+         <xpath expr="//field[@name='barcode']" position="after">
+          <field name="invoice_monthly"/> 
+        <field name="hide_days"/>         
+           
+          </xpath>
+    </field>
+</record>       
+
+
+ <record id="ia_order_view_order_form" model="ir.ui.view">
+            <field name="name">ia.sale.order.form</field>
+            <field name="model">sale.order</field>
+            <field name="priority">1000</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">   
+                 <xpath expr="//field[@name='order_line']/tree/field[@name='product_id']" position="before">
+                        <field name="supplier_partner_id" attrs="{'column_invisible': [('parent.is_rental_order', '=', True)]}" widget="res_partner_many2one" context="{'res_partner_search_mode': 'supplier', 'show_vat': True}"
+                                placeholder="Name, TIN, Email, or Reference" optional="show"/>
+                </xpath>
+                <xpath expr="//field[@name='order_line']/tree/field[@name='product_uom_qty']" position="before">
+                    <field name="rental_duration" attrs="{'column_invisible': [('parent.is_rental_order', '=', False)]}" optional="hide"/>     
+                    <field name="weekly_rate" attrs="{'column_invisible': [('parent.is_rental_order', '=', False)]}" optional="hide"/>                                
+                </xpath>
+                <xpath expr="//field[@name='order_line']/tree/field[@name='product_uom_qty']" position="after">
+                    <field name="muv_per" attrs="{'column_invisible': [('parent.is_rental_order', '=', True)]}" optional="show"/>                                   
+                    <field name="unit_cost" attrs="{'column_invisible': [('parent.is_rental_order', '=', True)]}" sum="Total" optional="show"/>
+                     <field name="unit_muv" attrs="{'column_invisible': [('parent.is_rental_order', '=', True)]}" sum="Total" optional="show"/>
+                </xpath>
+                  <xpath expr="//field[@name='order_line']/tree/field[@name='price_unit']" position="after">
+                   <field name="quantity_cost" attrs="{'column_invisible': [('parent.is_rental_order', '=', True)]}" sum="Total" optional="show"/>
+                    <field name="quantity_muv" attrs="{'column_invisible': [('parent.is_rental_order', '=', True)]}" sum="Total" optional="show"/>
+                    <field name="hide_in_quote" optional="show"/>
+                </xpath>
+                <xpath expr="//field[@name='order_line']/tree/field[@name='qty_invoiced']" position="attributes">
+                      <attribute name="attrs">{'column_invisible': [('parent.is_rental_order', '=', True)]}</attribute>
+
+                </xpath>
+                <xpath expr="//field[@name='order_line']/tree/field[@name='qty_invoiced']" position="after">
+                        <field name="rental_invoiced" string="Invoiced" optional="show" attrs="{'column_invisible': [('parent.is_rental_order', '=', False)]}"/>
+                </xpath>
+                  <xpath expr="//field[@name='sale_order_option_ids']/tree/field[@name='product_id']" position="attributes">
+                              <attribute name="domain">['|', ('sale_ok', '=', True), ('rent_ok', '=', True), '|', ('company_id', '=', False), ('company_id', '=', parent.company_id)]</attribute>
+                  </xpath>
+
+                  <xpath expr="//field[@name='order_line']/tree/field[@name='product_id']" position="attributes">
+                        <attribute name="optional">show</attribute>
+                  </xpath>
+                  <xpath expr="//field[@name='order_line']/tree/field[@name='name']" position="attributes">
+                        <attribute name="optional">show</attribute>
+                  </xpath>
+                  <xpath expr="//field[@name='order_line']/tree/field[@name='product_uom_qty']" position="attributes">
+                        <attribute name="optional">show</attribute>
+                  </xpath>
+                  <xpath expr="//field[@name='order_line']/tree/field[@name='customer_lead']" position="attributes">
+                        <attribute name="optional">show</attribute>
+                  </xpath>
+                  <xpath expr="//field[@name='order_line']/tree/field[@name='price_unit']" position="attributes">
+                        <attribute name="optional">show</attribute>
+                  </xpath>
+                  <xpath expr="//field[@name='order_line']/tree/field[@name='tax_id']" position="attributes">
+                        <attribute name="optional">show</attribute>
+                  </xpath>
+                  <xpath expr="//field[@name='order_line']/tree/field[@name='price_subtotal']" position="attributes">
+                        <attribute name="optional">show</attribute>
+                  </xpath>
+
+                   <xpath expr="//field[@name='partner_id']" position="after">
+                        <field name="site_location"/>     
+                  </xpath>
+                    <!--<xpath expr="//field[@name='partner_invoice_id']" position="replace">
+                       <field name="partner_invoice_id" invisible="1"/>     
+                  </xpath>-->
+                
+                   <xpath expr="//field[@name='client_order_ref']" position="replace">
+                       <field name="client_order_ref" string="PO Number"/>     
+                  </xpath>
+                <xpath expr="//notebook" position="inside">
+                    <page string="Cover Letter Details" name="cover_letter">
+                        <group>
+                            <group>
+                                <field name="cover_business_name"/>
+                                <field name="cover_contact_name"/>
+                            </group>
+                            <group>
+                                <field name="cover_date_order"/>
+                                <field name="cover_equipment_details"/>
+                            </group>
+                        </group>
+                    </page>
+                </xpath>
+            </field>
+        </record>  
+
+        <record id="ia_order_rental_order_view_kanban" model="ir.ui.view">
+            <field name="name">ia.sale.order.kanban</field>
+            <field name="model">sale.order</field>
+            <field name="priority">1000</field>
+            <field name="inherit_id" ref="sale_renting.rental_order_view_kanban"/>
+            <field name="arch" type="xml">   
+                <xpath expr="//div[hasclass('oe_kanban_bottom_left')]/span" position="attributes">
+                  <attribute name="style">color:black;</attribute>
+                </xpath>
+                 <xpath expr="//div[hasclass('oe_kanban_bottom_left')]/span/t[1]" position="after">
+                        <field name="reserved_lot_ids"/>
+                   
+                     </xpath>
+            </field>
+        </record>
+        <function name="write" model="ir.model.data">
+            <function name="search" model="ir.model.data">
+                <value
+                    eval="[('module', '=', 'sale'), ('name', '=', 'mail_notification_paynow_online')]" />
+            </function>
+            <value eval="{'noupdate': False}" />
+        </function>
+        <record id="sale.mail_notification_paynow_online" model="ir.ui.view">
+            <field name="active">False</field>
+        </record> 
+        <template id="mail_notification_paynow" priority="100" inherit_id="mail.mail_notification_paynow">
+            <xpath expr="//tr[2]//div[1]" position="replace"></xpath>
+        </template> 
+
+
+        <record id="ia_account_move_tree" model="ir.ui.view">
+            <field name="name">ia.account.move.tree</field>
+            <field name="model">account.move</field>
+            <field name="priority">1000</field>
+            <field name="inherit_id" ref="account.view_out_invoice_tree"/>
+            <field name="arch" type="xml">  
+                <xpath expr="//field[@name='payment_state']" position="after">
+                        <field name="is_move_sent" string = "Invoice Email Sent" optional="show"/>
+                </xpath>
+            </field>
+        </record>  
+
+
+           <record id="ia_account_move_filter" model="ir.ui.view">
+            <field name="name">ia.account.move.filter</field>
+            <field name="model">account.move</field>
+            <field name="priority">1000</field>
+            <field name="inherit_id" ref="account.view_account_invoice_filter"/>
+            <field name="arch" type="xml">  
+                <xpath expr="//filter[@name='due_date']" position="after">
+                    <separator/>
+                    <filter name="filter_is_move_sent" string="Invoice Email Sent" domain="[('is_move_sent', '=', True)]"/>
+                </xpath>
+            </field>
+        </record>  
+
+         <record id="ia_account_move_form" model="ir.ui.view">
+            <field name="name">ia.account.move.form</field>
+            <field name="model">account.move</field>
+            <field name="priority">1000</field>
+            <field name="inherit_id" ref="account.view_move_form"/>
+            <field name="arch" type="xml"> 
+                    <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='tax_ids']" position="after">
+                        <field name="hide_in_quote" optional="hide"/>
+                         <field name="hide_days" optional="show"/>   
+                        <field name="pickup_date" optional="show"/>
+                        <field name="return_date" optional="show"/>
+                        <field name="duration_days" optional="show"/>
+                     </xpath>
+
+                     <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='name']" position="after">
+                        <field name="no_weeks" optional="show"/>
+                        <field name="weekly_rate" optional="show"/>                                            
+                    </xpath>
+
+                    <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='name']" position="replace">
+                        <field name="name" widget="section_and_note_text" optional="show" attrs="{'required': [('parent.move_type', 'not in', ('in_invoice', 'in_refund','in_receipt'))]}"/>
+                    </xpath>
+
+                    <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='account_id']" position="replace">
+                        <field name="account_id" groups="account.group_account_readonly,account.group_account_invoice" optional="show" options="{'no_create': True}" domain="[('deprecated', '=', False), ('user_type_id.type', 'not in', ('receivable', 'payable')), ('company_id', '=', parent.company_id), ('is_off_balance', '=', False)]" attrs="{'required': [('display_type', '=', False)]}"/>
+                    </xpath>
+
+                    <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='quantity']" position="replace">
+                        <field name="quantity" optional="show"/>
+                    </xpath>
+
+                    <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='price_unit']" position="replace">
+                        <field name="price_unit" string="Price"  optional="show"/>
+                    </xpath>
+
+                    <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='price_subtotal']" position="replace">                     
+                        <field name="price_subtotal" string="Subtotal" groups="account.group_show_line_subtotals_tax_excluded"  optional="show"/>
+                    </xpath>
+                    <xpath expr="//field[@name='line_ids']/tree//field[@name='name']" position="after">
+                        <field name="hide_in_quote" invisible="1"/>
+                        <field name="pickup_date" invisible="1"/>
+                        <field name="return_date" invisible="1"/>
+                        <field name="duration_days" invisible="1"/>
+                    </xpath>
+                      <xpath expr="//field[@name='partner_id']" position="after">
+                        <field name="site_location"/>     
+                  </xpath>
+                 
+             </field>
+        </record>  
+
+
+         <record id="ia_order_rental_order_view_search" model="ir.ui.view">
+            <field name="name">ia.sale.order.search</field>
+            <field name="model">sale.order</field>
+            <field name="priority">1000</field>
+            <field name="inherit_id" ref="sale_renting.rental_order_view_search"/>
+            <field name="arch" type="xml">                  
+                <xpath expr="//field[@name='partner_id']" position="before">
+                    <field name="order_line" string="Reserved Lots" filter_domain="[('order_line.reserved_lot_ids', 'ilike', self)]"/>
+                </xpath>
+                <!-- <xpath expr="//filter[@name='filter_return']" position="replace"/> -->
+
+                 <xpath expr="//filter[@name='filter_pickup']" position="replace">
+                        <!-- <filter string="Pickup Date" name="filter_pickup" date="pickup_date"/> -->
+                </xpath>
+                       <xpath expr="//filter[@name='filter_return']" position="replace">
+                        <!-- <filter string="Return Date" name="filter_return" date="return_date_1"/>      -->
+                        <filter string="Actual Return Date" name="filter_actual_return" date="actual_return_date"/>                   
+              
+                     </xpath>
+                 <xpath expr="//searchpanel[1]" position="replace">
+                  <searchpanel>
+                    <field name="rental_status" icon="fa-retweet" enable_counters="1"/>
+                </searchpanel>
+                </xpath>
+            </field>
+        </record>
+
+    <record id="rental_order_form_view_inherit_stock_ia_custom" model="ir.ui.view">
+        <field name="name">rental.order.form.inherit.stock.ia.custom</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale_stock_renting.rental_order_form_view_inherit_stock"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook/page[@name='order_lines']/field/tree/field[@name='reserved_lot_ids']" position="attributes">
+                <attribute name="invisible">1</attribute> 
+                <attribute name="readonly">0</attribute> 
+                <attribute name="groups">stock.group_production_lot</attribute>
+            </xpath>
+            <xpath expr="//notebook/page[@name='order_lines']/field/tree/field[@name='reserved_lot_ids']" position="before">
+                   <field name="rental_reserved_lot_id" readonly = "1" optional="hide"/>     
+             </xpath>
+            
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="account_invoice_form_inherit_ia_sale_order_custom">
+        <field name="name">Account Invoice IA Sale</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="sale.account_invoice_form"/>
+        <field name="arch" type="xml">
+            <data>
+                <xpath expr="//field[@name='partner_shipping_id']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+            </data>
+        </field>
+    </record>
+
+    <record id="account_move_form_view_inherit_custom" model="ir.ui.view">
+        <field name="name">account.move.form.inherit.custom</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="priority">1000</field>
+        <field name="arch" type="xml">      
+            <xpath expr="//group[@name='sale_info_group']/label"  position="replace">
+                <label for="ref" string="PO Number"/>               
+            </xpath>
+        </field>
+    </record>
+
+    <record id="account_move_form_view_inherit_ia_sale_order_custom" model="ir.ui.view">
+        <field name="name">account.move.form.inherit.custom</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">      
+            <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='account_id']" position="attributes">
+                <attribute name="groups"></attribute>
+            </xpath>                    
+            <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='account_id']" position="after">
+                <field name="rental_reserved_lot_id" optional="hide"/>
+            </xpath> 
+            <xpath expr="//page[@name='other_info']//group[@name='accounting_info_group']" position="inside">
+                <field name="is_display_unit_price" widget="boolean_toggle"/>
+                <field name="is_display_line_total" widget="boolean_toggle"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="account.action_move_in_invoice_type" model="ir.actions.act_window">
+        <field name="view_mode">tree,kanban,form,pivot</field>
+    </record>
+
+    <record id="account_move_pivot_view" model="ir.ui.view">
+        <field name="name">account.move.pivot</field>
+        <field name="model">account.move</field>
+        <field name="arch" type="xml">
+            <pivot string="Bills">
+                <field name="name" type="row"/>
+                <field name="amount_total" type="measure"/>
+                <field name="amount_residual" type="measure"/>
+            </pivot>
+        </field>
+     </record>
+
+    <record model="ir.ui.menu" id="account.menu_action_account_moves_all">
+        <field name="groups_id" eval="[(4, ref('account.group_account_user'))]"/>
+    </record>
+
+
+     <record id="sale.action_quotations" model="ir.actions.act_window">
+            <field name="name">Quotations</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sale.order</field>
+            <field name="view_mode">tree,kanban,form,calendar,pivot,graph,activity</field>
+            <field name="search_view_id" ref="sale.sale_order_view_search_inherit_quotation"/>
+            <field name="context">{'search_default_my_quotation': 1}</field>
+            <field name="domain">[('is_rental_order', '=', False)]</field>
+            <field name="help" type="html">
+              <p class="o_view_nocontent_smiling_face">
+                Create a new quotation, the first step of a new sale!
+              </p><p>
+                Once the quotation is confirmed by the customer, it becomes a sales order.<br/> You will be able to create an invoice and collect the payment.
+              </p>
+            </field>
+        </record>
+
+        <record id="sale.action_quotations_with_onboarding" model="ir.actions.act_window">
+            <field name="name">Quotations</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sale.order</field>
+            <field name="view_id" ref="sale.view_quotation_tree_with_onboarding"/>
+            <field name="view_mode">tree,kanban,form,calendar,pivot,graph,activity</field>
+            <field name="search_view_id" ref="sale.sale_order_view_search_inherit_quotation"/>
+            <field name="context">{'search_default_my_quotation': 1}</field>
+            <field name="domain">[('is_rental_order', '=', False)]</field>
+            <field name="help" type="html">
+              <p class="o_view_nocontent_smiling_face">
+                Create a new quotation, the first step of a new sale!
+              </p><p>
+                Once the quotation is confirmed by the customer, it becomes a sales order.<br/> You will be able to create an invoice and collect the payment.
+              </p>
+            </field>
+        </record>
+
+         <record id="sale.action_orders" model="ir.actions.act_window">
+            <field name="name">Sales Orders</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sale.order</field>
+            <field name="view_mode">tree,kanban,form,calendar,pivot,graph,activity</field>
+            <field name="search_view_id" ref="sale.sale_order_view_search_inherit_sale"/>
+            <field name="context">{}</field>
+            <field name="domain">[('state', 'not in', ('draft', 'sent', 'cancel')),('is_rental_order', '=', False)]</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create a new quotation, the first step of a new sale!
+                </p><p>
+                    Once the quotation is confirmed, it becomes a sales order.<br/> You will be able to create an invoice and collect the payment.
+                </p>
+            </field>
+        </record>
+
+          <record id="sale.action_orders_to_invoice" model="ir.actions.act_window">
+            <field name="name">Orders to Invoice</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sale.order</field>
+            <field name="view_mode">tree,form,calendar,graph,pivot,kanban,activity</field>
+            <field name="context">{'create': False}</field>
+            <field name="domain">[('invoice_status','=','to invoice'),('is_rental_order', '=', False)]</field>
+            <field name="search_view_id" ref="sale.view_sales_order_filter"/>
+            <field name="help" type="html">
+              <p class="o_view_nocontent_smiling_face">
+                No orders to invoice found
+              </p><p>
+                You can select all orders and invoice them in batch,<br/>
+                or check every order and invoice them one by one.
+              </p>
+            </field>
+        </record>
+
+    <record id="sale_renting.rental_order_action" model="ir.actions.act_window">
+        <field name="name">Rental Orders</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">sale.order</field>
+        <field name="view_mode">tree,kanban,form,calendar,pivot,graph,activity</field>
+        <field name="search_view_id" ref="sale_renting.rental_order_view_search"/>
+        <field name="context">{'default_is_rental_order': 1, 'search_default_from_rental': 1}</field>
+        <field name="domain">[('is_rental_order', '=', True)]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new quotation, the first step of a new rental!
+            </p><p>
+                Once the quotation is confirmed, it becomes a rental order.<br/> You will be able to create an invoice and collect the payment.
+            </p>
+        </field>
+    </record>
+        
+</odoo>

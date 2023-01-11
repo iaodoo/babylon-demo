@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_order_form_inherit_ia_limit_analytic_create" model="ir.ui.view">
+            <field name="name">sale.order.form.inherit.ia.limit.analytic.create</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='analytic_tag_ids']"
+                       position="attributes">
+                    <attribute name="options">{'color_field': 'color','no_create': True, 'no_create_edit': True}
+                    </attribute>
+                </xpath>
+                <xpath expr="//group[@name='sale_info']//field[@name='analytic_account_id']" position="attributes">
+                    <attribute name="options">{'no_create': True, 'no_create_edit': True}</attribute>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

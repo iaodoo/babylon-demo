@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+        <record id="report_sale_cover_letter" model="ir.actions.report">
+            <field name="name">Cover Letter</field>
+            <field name="model">sale.order</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">ia_sale_report.report_sale_coverletter</field>
+            <field name="report_file">ia_sale_report.report_sale_coverletter</field>
+            <field name="print_report_name">'Cover Letter - %s' % (object.name)</field>
+            <field name="binding_model_id" ref="sale.model_sale_order"/>
+            <field name="paperformat_id" ref="ia_sale_report.paperformat_sale_cover_letter"/>
+            <field name="binding_type">report</field>
+        </record>
+    </data>
+
+    <template id="report_sale_coverletter_document">
+        <t t-call="web.basic_layout">
+            <t t-set="o" t-value="o.with_context(lang=o.partner_id.lang)"/>
+            <div class="page" style="font-size: 18px;">
+                <div class="oe_structure"/>
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <img src="/ia_sale_report/static/static/src/img/west.png" style="height:195px;width:680px" alt="Logo"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 text-center" style="font-size: 20px;">
+                        <i>
+                            <strong>
+                                is pleased to prepare a proposal for your bulk fuel storage and dispensing
+                            </strong>
+                        </i>
+                    </div>
+                </div>
+                <br/>
+                <t t-if="o.cover_business_name">
+                    <t t-set="business" t-value="o.cover_business_name"/>
+                </t>
+                <t t-else ="">
+                    <t t-set="business" t-value="o.partner_id.name"/>
+                    <t t-if="o.partner_id.parent_id">
+                        <t t-set="business" t-value="o.partner_id.parent_id.name"/>
+                    </t>
+                </t>
+                <t t-if="o.cover_contact_name">
+                    <t t-set="contact" t-value="o.cover_contact_name"/>
+                </t>
+                <t t-else ="">
+                    <t t-set="contact" t-value="o.partner_id.name"/>
+                </t>
+                <t t-if="o.cover_date_order">
+                    <t t-set="date_order" t-value="o.cover_date_order"/>
+                </t>
+                <t t-else ="">
+                    <t t-set="date_order" t-value="o.date_order"/>
+                </t>
+
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <strong>
+                            <t t-esc="business"/>
+                        </strong>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <strong>
+                            <span t-field="o.name"/>
+                        </strong>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <strong>
+                            <span t-esc="date_order" t-options='{"widget": "date"}'/>
+                        </strong>
+                    </div>
+                </div>
+                <br/>
+                
+                <p>To  <t t-esc="contact"/>,</p>
+                <t t-set="sale_type">purchase</t>
+                <t t-if="o.is_rental_order">
+                    <t t-set="sale_type">hire</t>
+                </t>
+
+                <t t-if="o.cover_equipment_details">
+                    <t t-set="order_line" t-value="o.cover_equipment_details"/>
+                </t>
+                <t t-else ="">
+                    <t t-set="order_line"
+                       t-value="', '.join(map(lambda x: (x.product_id.name), o.order_line.filtered(lambda y: not y.display_type and not y.hide_in_quote)[:1]))"/>
+                </t>
+
+
+                <p>Westanks understand <t t-esc="business"/> are interested in the <t t-esc="sale_type"/> of a  <span t-esc="order_line"/>.</p>
+                <p>Based on the information received, Westanks is pleased to submit a proposal for your consideration.
+                </p>
+                <p>Westanks has the advantage of our own transport fleet to ensure a smooth delivery service boasting a
+                    generation of experience servicing the mining, transport, civil and many more industries. Westanks
+                    is proud to offer our commissioning abilities for a turn key solution.
+                </p>
+                <p>By using Westanks you can have the satisfaction that you have contributed to local employment and
+                    helped continue the growth of a family business.
+                </p>
+                <p>Please feel free to make contact should you require additional information or support.</p>
+                <p>Kind Regards,</p>
+                <div>
+                    <div t-field="o.user_id" t-options='{"widget": "contact", "fields": ["name"], "no_marker": True}'/>
+                    <div t-if="o.user_id.partner_id.function" t-field="o.user_id.partner_id.function"/>
+                    <div t-if="o.user_id.partner_id.mobile" t-field="o.user_id.partner_id.mobile"/>
+                </div>
+                <div class="row">
+                    <div class="col-12 text-left">
+                        <img src="/ia_sale_report/static/static/src/img/west_sign.png" style="max-height:3.93 cm;max-width:3.23 cm" alt="Logo"/>
+                    </div>
+                </div>
+                <p><i><strong>Quotes are valid for 30 days</strong></i></p>
+            </div>
+        </t>
+    </template>
+
+    <template id="report_sale_coverletter">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="ia_sale_report.report_sale_coverletter_document" t-lang="o.partner_id.lang"/>
+            </t>
+        </t>
+    </template>
+
+</odoo>

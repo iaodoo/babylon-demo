@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_reset_move_date_ia" model="ir.actions.server">
+        <field name="code">
+for record in records:
+  if record.invoice_date and record.invoice_date != record.date:
+    record['date'] = record.invoice_date
+        </field>
+        <field name="model_id" ref="account.model_account_move"/>
+        <field name="name">Reset Accounting Date</field>
+        <field name="state">code</field>
+    </record>
+    <record id="reset_move_date_action_rule" model="base.automation">
+        <field name="action_server_id" ref="ia_sale_order_custom.action_reset_move_date_ia"/>
+        <field name="active" eval="True"/>
+        <field name="filter_domain">[["move_type","in",["in_invoice","in_refund"]]]</field>
+        <field name="filter_pre_domain" eval="False"/>
+        <field name="trigger">on_create</field>
+    </record>
+</odoo>

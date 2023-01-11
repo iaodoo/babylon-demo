@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+  <record id="rental_configurator_view_form1" model="ir.ui.view">
+    <field name="name">rental.configurator.form.inherit.stock1</field>
+    <field name="model">rental.wizard</field>
+    <field name="inherit_id" ref="sale_renting.rental_configurator_view_form"/>
+    <field name="arch" type="xml">
+      <xpath expr="//field[@name='lot_ids']" position="replace">
+           <field name="lot_ids" widget="many2many_tags" placeholder="Select available serial numbers." invisible="1"      attrs="{'invisible': [('tracking', '!=', 'serial')]}"
+            options="{'no_open':1, 'no_create_edit':1}"/>
+
+            <field name="rental_lot_id" attrs="{'invisible': [('tracking', '!=', 'serial')]}"  options="{'no_open':1, 'no_create_edit':1}"/>
+
+      </xpath>
+
+    </field>
+  </record>
+
+</odoo>

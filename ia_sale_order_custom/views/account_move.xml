@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo> 
+
+     <record id="view_move_rental_line_tree" model="ir.ui.view">
+            <field name="name">account.move.rental.line.tree</field>
+            <field name="model">account.move.line</field>
+            <field eval="150" name="priority"/>
+            <field name="arch" type="xml">
+                <tree string="Rental Invoice Lines" create="false" edit="false" sample="1">
+                    <field name="order_number" optional="show"/>
+                    <field name="partner_id" optional="show"/>
+                    <field name="rental_reserved_lot_id" optional="show"/>
+                    <field name="name" string = "Description" optional="show"/>
+                    <field name="quantity" optional="show"/>
+                    <field name="pickup_date" optional="show"/>
+                    <field name="return_date" optional="show"/>
+                    <field name="invoice_start_date" optional="show"/>
+                    <field name="invoice_end_date" optional="show"/>
+                    <field name="rental_status" optional="show"/>
+                    <field name="daily_rate" optional="show"/>
+                    <field name="no_weeks" optional="show"/>
+                    <field name="weekly_rate" optional="show"/>
+
+                    <field name="move_name" invisible="1"/>
+                    <field name="product_id"  optional="hide"/>
+                    <field name="account_id"   groups="account.group_account_readonly"  optional="hide"/>
+                    <field name="analytic_account_id"                                 
+                                               groups="analytic.group_analytic_accounting"
+                                               optional="hide"/>
+                    <field name="analytic_tag_ids"
+                            
+                            groups="analytic.group_analytic_tags"
+                            optional="hide"
+                            widget="many2many_tags"/>
+                    <field name="product_uom_category_id" invisible="1"/>
+                    <field name="product_uom_id" string="UoM" groups="uom.group_uom" optional="hide"/>
+                    <field name="price_unit" string="Price" optional="hide"/>
+                    <field name="discount" string="Disc.%" optional="hide"/>
+                    <field name="duration_days" invisible="0" optional="show"/>
+                    <field name="tax_ids" widget="many2many_tags"                                             
+                            context="{'append_type_to_tax_name': not parent.invoice_filter_type_domain}"
+                            options="{'no_create': True}"
+                            optional="hide"/>
+                    <field name="price_subtotal"
+                            string="Subtotal"
+                            groups="account.group_show_line_subtotals_tax_excluded" optional="show"/>
+                    <field name="price_total"
+                            string="Total"
+                            groups="account.group_show_line_subtotals_tax_included" optional="hide"/>
+
+                    <!-- Others fields -->
+                    <!-- <field name="partner_id" invisible="1"/>
+                    <field name="amount_currency" invisible="1"/>
+                    <field name="currency_id" invisible="1"/>
+                    <field name="debit" invisible="1"/>
+                    <field name="credit" invisible="1"/>
+                    <field name="date" invisible="1"/>
+                    <field name="date_maturity" invisible="1"/>
+
+                    <field name="tax_line_id" invisible="1"/>
+                    <field name="tax_repartition_line_id" invisible="1"/>
+                    <field name="tax_tag_ids" invisible="1"/>
+                    <field name="tax_base_amount" invisible="1"/>
+                    <field name="tax_exigible" invisible="1"/>
+                    <field name="company_id" invisible="1"/>
+                    <field name="company_currency_id" invisible="1"/>
+                    <field name="recompute_tax_line" invisible="1" force_save="1"/>
+                    <field name="display_type" force_save="1" invisible="1"/>
+                    <field name="is_rounding_line" invisible="1"/>
+                    <field name="exclude_from_invoice_tab" invisible="1"/>
+                    <field name="account_internal_type" invisible="1"/>
+                    <field name="account_internal_group" invisible="1"/> -->
+                </tree>
+            </field>
+        </record>
+    <record id="action_account_moves_journal_rentals" model="ir.actions.act_window">
+        <field name="name">Rental Invoice Lines</field>
+        <field name="context">{'journal_type':'sales', 'search_default_group_by_order_number': 1, 'expand': 1}</field>
+        <field name="res_model">account.move.line</field>
+        <field name="domain">[('display_type', 'not in', ('line_section', 'line_note'))]</field>
+        <field name="view_id" ref="view_move_rental_line_tree"/>
+        <field name="view_mode">tree</field>
+    </record>  
+   <record id="action_account_moves_invoice_rentals" model="ir.actions.act_window">
+        <field name="name">Rental Invoice Lines</field>
+        <field name="context">{}</field>        
+        <field name="res_model">account.move.line</field>    
+        <!--<field name="domain">[('rental_status','!=','draft'),('move_id.is_rental_order_invoice','=', True),('display_type', 'not in', ('line_section', 'line_note'))]</field>-->
+        <field name="domain">[('analytic_tag_ids','in',[1]),('display_type', 'not in', ('line_section', 'line_note')),('move_id.move_type','in',('out_invoice','out_refund'))]</field>
+        <field name="view_id" ref="view_move_rental_line_tree"/>
+        <field name="view_mode">tree</field>
+    </record>
+
+    <menuitem id="sale_renting.menu_rental_reporting" name="Reporting" parent="sale_renting.rental_menu_root" sequence="5" groups="sales_team.group_sale_manager"/>
+    <menuitem id="menu_rental_reporting1" name="Reporting" parent="sale_renting.menu_rental_reporting" sequence="5" groups="sales_team.group_sale_manager" action="sale_renting.action_rental_report"/>
+    <menuitem id="menu_rental_reporting2" name="Rental Invoice Lines" parent="sale_renting.menu_rental_reporting" sequence="5" groups="sales_team.group_sale_manager" action="action_account_moves_invoice_rentals"/>   
+</odoo> 
+

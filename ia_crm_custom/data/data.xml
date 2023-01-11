@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<odoo noupdate="1">
+
+    <!-- Sequence for Sales Quotes -->
+    <record id="seq_sale_quotation" model="ir.sequence">
+        <field name="name">Sales Quotation</field>
+        <field name="code">sale.quotation</field>
+        <field name="prefix">QRN</field>
+        <field name="padding">4</field>
+
+        <field name="company_id" eval="False" />
+    </record>
+
+    <!-- Sequence for Project Quotes 
+    <record id="seq_project_quotation" model="ir.sequence">
+        <field name="name">Project Quotation</field>
+        <field name="code">project.quotation</field>
+        <field name="prefix">QRN</field>
+        <field name="padding">4</field>
+        <field name="suffix">P</field>
+        <field name="company_id" eval="False" />
+    </record>-->
+
+    <!-- Sequence for Hire Quotes 
+    <record id="seq_hire_quotation" model="ir.sequence">
+        <field name="name">Hire Quotation</field>
+        <field name="code">hire.quotation</field>
+        <field name="prefix">QRN</field>
+        <field name="padding">4</field>
+        <field name="suffix">H</field>
+        <field name="company_id" eval="False" />
+    </record>-->
+
+</odoo>

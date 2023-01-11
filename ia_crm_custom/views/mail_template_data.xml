@@ -1,0 +1,33 @@
+<?xml version="1.0" ?>
+<odoo>
+
+    <!-- Mail template are declared in a NOUPDATE block
+         so users can freely customize/delete them -->
+    <data noupdate="1">
+        <!--Email template -->
+        <record id="email_template_edi_opportunity" model="mail.template">
+            <field name="name">Opportunity moves to 25-day Stage: Send by email</field>
+            <field name="model_id" ref="crm.model_crm_lead"/>
+            <field name="email_from"></field>
+            <field name="email_to">${object.user_id.login}</field>
+            <field name="subject">Opportunity ${object.name} moves to 25-day Stage</field>
+            <field name="body_html" type="html">
+<div style="margin: 0px; padding: 0px;">
+    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+        Dear
+        % if object.user_id:
+            ${object.user_id.name},        
+        % endif
+        <br /><br />
+        Please note this opportunity has been moved to the 25 Days Quote Send stage
+          <div style="text-align:center;margin: 16px 0px 16px 0px;">
+        <a style="background-color:#875A7B;padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;" href="${object.get_base_url()}/web#model=crm.lead&amp;id=${object.id}&amp;view_type=form">Go to Opportunity</a>
+    </div>
+      
+    </p>
+</div>
+            </field>          
+            <field name="auto_delete" eval="True"/>
+        </record>
+    </data>
+</odoo>

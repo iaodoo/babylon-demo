@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="disable_keypay_action" model="ir.actions.server">
+            <field name="code">
+param = env['ir.config_parameter'].search([('key','=','web.base.url')])
+if 'westankstest' in param.value:
+  companies = env['res.company'].search([])
+  for company in companies:
+    if company.api_key:
+      company.write({
+        'keypay_url': '',
+        'api_key': '',
+        'payroll_business_id': '',
+        'payroll_base_url': '',
+      })
+            </field>
+            <field name="model_id" ref="base.model_ir_config_parameter"/>
+            <field name="name">Disable Keypay API</field>
+            <field name="state">code</field>
+      </record>
+
+      <record id="disable_keypay_action_rule" model="base.automation">
+        <field name="action_server_id" ref="ia_keypay_company_config.disable_keypay_action"/>
+        <field name="active" eval="True"/>
+        <field name="filter_domain">[["value","ilike","westankstest"]]</field>
+        <field name="filter_pre_domain" eval="False"/>
+        <field name="trigger">on_create_or_write</field>
+        <field name="trigger_field_ids" search="[('model','=','ir.config_parameter'),('name','=','value')]"/>
+      </record>
+    </data>
+</odoo>

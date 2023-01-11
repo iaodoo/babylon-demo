@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="report_payment_receipt_document" inherit_id="account.report_payment_receipt_document">
+            <xpath expr="//table/thead/tr/th[2]" position="attributes">
+                <attribute name="style">display:none;</attribute>
+            </xpath>
+            <xpath expr="//table/thead/tr/th[3]" position="attributes">
+                <attribute name="style">display:none;</attribute>
+            </xpath>
+            <xpath expr="//table/thead/tr/th[4]" position="before">
+                <th><span>Payment Reference</span></th>
+            </xpath>
+            <xpath expr="//table/tbody/tr/t/td[2]" position="attributes">
+                <attribute name="style">display:none;</attribute>
+            </xpath>
+            <xpath expr="//table/tbody/tr/t/td[3]" position="attributes">
+                <attribute name="style">display:none;</attribute>
+            </xpath>
+            <xpath expr="//table/tbody/tr/t/td[4]" position="before">
+                <td><span t-field="inv.payment_reference"/></td>
+            </xpath>
+        </template>
+    </data>
+</odoo>

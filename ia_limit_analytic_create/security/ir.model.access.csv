@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+analytic.access_account_analytic_account,access_account_analytic_account,analytic.model_account_analytic_account,analytic.group_analytic_accounting,1,1,1,0
+account.access_account_analytic_accountant,account.analytic.account accountant,analytic.model_account_analytic_account,account.group_account_user,1,1,1,0
+project.access_account_analytic_account_manager,account.analytic.account,analytic.model_account_analytic_account,project.group_project_manager,1,1,1,0
+access_account_analytic_account_admin,account.analytic.account,analytic.model_account_analytic_account,ia_limit_analytic_create.group_enable_analytic_account_deletion,1,1,1,1

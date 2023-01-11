@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    
+    <!-- Invoice Inherit -->
+    <record id="ia_view_move_form_inherit10" model="ir.ui.view">
+        <field name="name">ia_view_move_form_inherit10</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='to_check']" position="after">
+                <field name="is_move_sent" readonly="0" string="Invoice Email Sent"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

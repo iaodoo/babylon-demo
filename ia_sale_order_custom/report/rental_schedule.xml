@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+  <record id="ia_rental_schedule_view_search_inherit_lots" model="ir.ui.view">
+    <field name="name">ia.rental.schedule.search.inherit.stock</field>
+    <field name="model">sale.rental.schedule</field>
+    <field name="inherit_id" ref="sale_renting.rental_schedule_view_search"/>
+    <field name="priority">100</field>
+    <field name="arch" type="xml">
+      <field name="product_id" position="after">
+          <field name="home_depot_id"/>
+      </field>
+      <xpath expr="//filter[@name='Lot']" position="after">
+        <filter string="Home Depot" name="Lot" context="{'group_by': 'home_depot_id'}"/>
+      </xpath>
+    </field>
+  </record>
+  <!-- <record id="sale_renting.action_rental_order_schedule" model="ir.actions.act_window">
+      <field name="name">Scheduled Rentals</field>
+      <field name="res_model">sale.rental.schedule</field>
+      <field name="view_mode">gantt</field>
+      <field name="context">{'group_by_no_leaf':1}</field>
+  </record>
+
+    <record id="ia_rental_schedule_view_gantt_inherit" model="ir.ui.view">
+    <field name="name">ia.sale.rental.schedule.gantt</field>
+    <field name="model">sale.rental.schedule</field>
+    <field name="inherit_id" ref="sale_renting.rental_schedule_view_gantt"/>
+    <field name="arch" type="xml">    
+      <xpath expr="//gantt/templates//ul" position="attributes">       
+        <attribute name="t-if">name</attribute>
+      </xpath>
+    </field>
+  </record> -->
+  </odoo>

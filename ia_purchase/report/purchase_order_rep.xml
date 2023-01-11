@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="purchase_report_purchaseorder_document" inherit_id="purchase.report_purchaseorder_document">
+         <xpath expr="//div[hasclass('page')]/p[1]" position="before">
+            <p t-if="o.payment_term_id.note">
+                <div style="font-size: 12px;">
+                    <div style="font-weight: bold;font-size:12px;float:left;width:50%;">Milestone Payment Schedule:
+                    </div>
+                    <br/>
+                    <div style="font-size:12px;float:left;width:50%;">
+                        <span t-field="o.payment_term_id.note"/>
+                    </div>
+                </div>
+            </p>
+         </xpath>
+        <xpath expr="//div[hasclass('page')]" position="attributes">
+            <attribute name="style">font-size: 12px;</attribute>
+        </xpath>
+    </template>
+</odoo>
+                

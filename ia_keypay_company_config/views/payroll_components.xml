@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- =============== -->
+        <!-- Employment Type -->
+        <!-- =============== -->
+
+        <record model="ir.ui.view" id="view_employment_type_form">
+            <field name="name">employment.type.form</field>
+            <field name="model">employment.type</field>
+            <field name="arch" type="xml">
+                <form string="Employment Type">
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="synch"/>
+                            <field name="active"/>
+                        </group>
+                        <group/>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_employment_type_tree">
+            <field name="name">employment.type.tree</field>
+            <field name="model">employment.type</field>
+            <field name="arch" type="xml">
+                <tree string="Employment Type">
+                    <field name="name"/>
+                    <field name="synch"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_employment_type" model="ir.actions.act_window">
+            <field name="name">Employment Type</field>
+            <field name="res_model">employment.type</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem parent="hr.menu_human_resources_configuration" sequence="1000"
+                  id="menu_employment_type" name="Employment Type" action="action_employment_type"
+                  groups="hr.group_hr_manager"/>
+
+
+        <!-- =============== -->
+        <!-- Employee Schedule -->
+        <!-- =============== -->
+
+        <record model="ir.ui.view" id="view_pay_schedule_form">
+            <field name="name">ia.employee.pay.schedule.form</field>
+            <field name="model">ia.employee.pay.schedule</field>
+            <field name="arch" type="xml">
+                <form string="Employee Pay Schedule">
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="synch"/>
+                            <field name="active"/>
+                        </group>
+                        <group/>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_pay_schedule_tree">
+            <field name="name">ia.employee.pay.schedule.tree</field>
+            <field name="model">ia.employee.pay.schedule</field>
+            <field name="arch" type="xml">
+                <tree string="Employee Pay Schedule">
+                    <field name="name"/>
+                    <field name="synch"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_pay_schedule" model="ir.actions.act_window">
+            <field name="name">Employee Pay Schedule</field>
+            <field name="res_model">ia.employee.pay.schedule</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem parent="hr.menu_human_resources_configuration" sequence="1001"
+                  id="menu_pay_schedule" name="Employee Pay Schedule" action="action_pay_schedule"
+                  groups="hr.group_hr_manager"/>
+
+
+    </data>
+</odoo>
